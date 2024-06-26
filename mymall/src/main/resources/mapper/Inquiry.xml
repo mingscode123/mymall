@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.contact.dao.InquiryDao">
+	
+	<resultMap type="com.mall.table.vo.InquiryInfoVO" id="inquiryMap">
+		<result property="userId" 			column="user_id" />
+		<result property="userName" 		column="user_name" />
+		<result property="boardSeq" 		column="board_seq" />
+		<result property="boardType" 		column="board_type" />
+		<result property="title" 			column="title" />
+		<result property="content" 			column="content" />
+		<result property="attchFile" 		column="attch_file" />
+		<result property="replyYn" 			column="reply_yn" />
+		<result property="replyContent"	 	column="reply_content" />
+		<result property="regDt" 			column="reg_dt" />
+		<result property="delYn" 			column="del_yn" />
+		<result property="replyDt" 			column="reply_dt" />
+		
+	</resultMap>
+	
+	<select id="selectTotalInquiryCount" resultType="integer">
+		SELECT COUNT(*)
+		FROM TB_BOARD_INFO
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="selectMyInquiryList" resultMap="inquiryMap">
+
+		SELECT 
+			BOARD_TYPE,
+			USER_ID,
+			BOARD_SEQ,
+			TITLE,
+			REG_DT,
+			REPLY_YN,
+			REPLY_DT
+  		FROM (
+			SELECT 
+				ROWNUM RN,
+			    A.BOARD_TYPE,
+			    A.USER_ID,
+			    A.BOARD_SEQ,
+			    B.USER_NAME,
+			    A.TITLE,
+			    TO_CHAR(A.REG_DT, 'YYYY-MM-DD') AS REG_DT,
+			    NVL(A.REPLY_YN, '-') AS REPLY_YN,
+			 	NVL(TO_CHAR(A.REPLY_DT, 'YYYY-MM-DD'), '-') AS REPLY_DT
+				FROM TB_BOARD_INFO A
+				INNER JOIN TB_USER_INFO B ON A.USER_ID = B.USER_ID
+				WHERE A.USER_ID = #{userId}
+  		)
+  		WHERE RN<![CDATA[ > ]]>(#{currentPage}-1)*#{countPerPage} 
+		AND RN<![CDATA[ <= ]]>#{currentPage}*#{countPerPage}
+  		
+	</select>
+	
+	<select id="selectInquiryInfo" resultMap="inquiryMap">
+	
+		SELECT 
+	    B.TITLE,
+	    B.BOARD_TYPE,
+	    A.USER_ID,
+	    A.USER_NAME,
+	    B.ATTCH_FILE,
+	    TO_CHAR(B.REG_DT, 'YYYY-MM-DD') AS REG_DT,
+	    B.CONTENT,
+	    B.REPLY_CONTENT
+		FROM TB_USER_INFO A
+		INNER JOIN TB_BOARD_INFO B ON A.USER_ID = B.USER_ID
+		WHERE A.USER_ID = #{userId}
+		AND B.board_seq = #{boardSeq}
+  		
+	</select>
+	
+	 		
+	<insert id="insertInquiry">
+		INSERT INTO TB_BOARD_INFO
+		 (USER_ID, 
+		  BOARD_SEQ,
+		  TITLE,
+		  CONTENT,
+		  BOARD_TYPE,
+		  ATTCH_FILE,
+		  REG_DT
+		 )
+		VALUES
+		 ( #{userId},
+		 ( SELECT NVL(MAX(BOARD_SEQ),0)+1 FROM TB_BOARD_INFO WHERE USER_ID = #{userId}),
+		  #{title},
+		  #{content},
+		  #{boardType},
+		  NULL,
+		  SYSDATE
+		  )
+	</insert>
+	
+
+	
+
+	
+</mapper>

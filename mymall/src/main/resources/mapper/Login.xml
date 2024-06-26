@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- MY MALL LOGIN -->
+<mapper namespace="com.mall.user.dao.UserDao">
+	
+	<resultMap type="com.mall.table.vo.UserInfoVO" id="userMap">
+		<result property="userId" 		column="USER_ID"/>
+		<result property="userPwd" 		column="USER_PWD"/>
+		<result property="userName"		column="USER_NAME"/>
+		<result property="phone" 		column="PHONE"/>
+		<result property="email" 		column="EMAIL"/>
+		<result property="addr" 		column="ADDR" />
+		<result property="addrDtl" 		column="ADDR_DTL" />
+		<result property="joinDt"	 	column="JOIN_DT" />
+		<result property="withdrawYn" 	column="WITHDRAW_YN" />
+		<result property="withdrawDt" 	column="WITHDRAW_DT" />		
+	</resultMap>
+	
+	
+	<select id="selectUserInfo" resultMap="userMap">
+		SELECT 
+			USER_ID,
+			USER_NAME,
+			PHONE,
+			EMAIL,
+			ADDR
+		  FROM TB_USER_INFO
+		 WHERE USER_ID = #{userId} 
+	</select>
+	
+	
+	
+	
+</mapper>

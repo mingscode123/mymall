@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.main.dao.MainDao">
+
+	<resultMap type="com.mall.table.vo.GoodsInfoVO" id="goodsMap">
+		<result property="goodsCd" column="GOODS_CD" />
+		<result property="ctCd" column="CT_CD" />
+		<result property="goodsName" column="GOODS_NAME" />
+		<result property="normalPrice" column="NORMAL_PRICE" />
+		<result property="sellPrice" column="SELL_PRICE" />
+		<result property="ivQty" column="IV_QTY" />
+		<result property="goodsStatus" column="GOODS_STATUS" />
+		<result property="supplierCd" column="SUPPLIER_CD" />
+		<result property="thumnailUrl" column="THUMNAIL_URL" />
+		<result property="content" column="CONTENT" />
+		<result property="regDt" column="REG_DT" />
+		<result property="ctName" column="CT_NAME" />
+		<result property="topCt" column="TOP_CT" />
+		<result property="middleCt" column="MIDDLE_CT" />
+		<result property="subCt" column="SUB_CT" />
+		<result property="supplierName" column="SUPPLIER_NAME" />
+		<result property="ctLevel" column="CT_LEVEL" />
+		<result property="upCtCd" column="UP_CT_CD" />
+	</resultMap>
+
+	<resultMap type="com.mall.table.vo.CategoryInfoVO"	id="categoryMap">
+		<result property="ctCd" column="CT_CD" />
+		<result property="ctName" column="CT_NAME" />
+		<result property="ctLevel" column="CT_LEVEL" />
+		<result property="upCtCd" column="UP_CT_CD" />
+		<result property="regDt" column="REG_DT" />
+	</resultMap>
+	
+	<resultMap type="com.mall.table.vo.GoodImgInfoVO"	id="goodImgMap">
+		<result property="goodsCd" column="GOODS_CD" />
+		<result property="imgSeq" column="IMG_SEQ" />
+		<result property="imgUrl" column="IMG_URL" />
+		<result property="fileName" column="FILE_NAME" />
+		<result property="regDt" column="REG_DT" />
+		<result property="delYn" column="DEL_YN" />
+	</resultMap>
+
+	
+
+	<select id="selectHotGoodsList" resultMap="goodsMap">
+			SELECT
+			A.GOODS_CD,
+		    A.GOODS_NAME,
+		    A.SELL_PRICE,
+		    A.THUMNAIL_URL,
+		    B.CT_CD
+		FROM
+		    TB_GOODS_INFO A
+		INNER JOIN
+		    TB_GOODS_CATEGORY B ON A.CT_CD = B.CT_CD
+		WHERE
+		    A.REG_DT  <![CDATA[ >= ]]> SYSDATE - 7
+		    AND A.REG_DT  <![CDATA[ <= ]]>SYSDATE
+
+	</select>
+	
+	<select id="selectGoodsList" resultMap="goodsMap">
+			SELECT
+			A.GOODS_CD,
+		    A.GOODS_NAME,
+		    A.SELL_PRICE,
+		    A.THUMNAIL_URL,
+		    B.CT_CD
+		FROM
+		    TB_GOODS_INFO A
+		INNER JOIN
+		    TB_GOODS_CATEGORY B ON A.CT_CD = B.CT_CD
+	</select>
+
+	<select id="selectCategoryList" resultMap="goodsMap">
+		SELECT
+		    CT_CD,
+		    CT_NAME
+		FROM
+		    TB_GOODS_CATEGORY
+		WHERE
+		    LENGTH(CT_CD) = 6
+	</select >
+	
+	
+	
+
+	
+
+
+</mapper>
